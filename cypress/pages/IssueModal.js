@@ -14,6 +14,8 @@ class IssueModal {
     this.cancelDeletionButtonName = "Cancel";
     this.confirmationPopup = '[data-testid="modal:confirm"]';
     this.closeDetailModalButton = '[data-testid="icon:close"]';
+    this.issueTypeBug = '[data-testid="select-option:Bug"]';
+    this.babyYoda = '[data-testid="select-option:Baby Yoda"]';
   }
 
   getIssueModal() {
@@ -86,18 +88,13 @@ class IssueModal {
     cy.contains(issueTitle).should("not.exist");
   }
 
-  validateIssueVisibilityState(issueTitle, isVisible = true) {
-    cy.get(this.issueDetailModal).should("not.exist");
-    cy.reload();
-    cy.get(this.backlogList).should("be.visible");
-    if (isVisible) cy.contains(issueTitle).should("be.visible");
-    if (!isVisible) cy.contains(issueTitle).should("not.exist");
-  }
-
-  ensureIssueIsVisibleOnBoard(issueTitle) {
-    cy.get(this.issueDetailModal).should("not.exist");
-    cy.reload();
-    cy.contains(issueTitle).should("be.visible");
+  validateAmountOfIssuesInBacklog(amountOfIssues) {
+    cy.get('[data-testid="board-list:backlog"]').within(() => {
+      cy.get('[data-testid="list-issue"]').should(
+        "have.length",
+        amountOfIssues
+      );
+    });
   }
 
   clickDeleteButton() {
@@ -135,15 +132,6 @@ class IssueModal {
       .first()
       .click();
     cy.get(this.issueDetailModal).should("not.exist");
-  }
-
-  validateAmountOfIssuesInBacklog(amountOfIssues) {
-    cy.get('[data-testid="board-list:backlog"]').within(() => {
-      cy.get('[data-testid="list-issue"]').should(
-        "have.length",
-        amountOfIssues
-      );
-    });
   }
 }
 
